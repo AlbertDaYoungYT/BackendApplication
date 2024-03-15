@@ -12,7 +12,7 @@ def verifyApiToken(token):
         sqlc.execute("SELECT (uid, expiration_date) FROM api_tokens WHERE token = '%s'", token)
         res = sqlc.fetchone()
 
-        if not res and datetime.timestamp(datetime.strptime(date_created, '%Y-%m-%d %H:%M:%S')) => time.time():
+        if not res and datetime.timestamp(datetime.strptime(res[1], '%Y-%m-%d %H:%M:%S')) >= time.time():
             return False
 
         redisdb.set("request-auth:" + token, json.dumps({"uid": res[0], "expiration_date": res[1]}))
